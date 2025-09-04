@@ -8,8 +8,9 @@ namespace Internal_Portal.Data
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-        public DbSet<UserRoleMaster> UserRoleMasters { get; set; }
-        public DbSet<Register> Registers { get; set; }
+        public DbSet<UserRoleMaster> UserRoleMaster { get; set; }
+        public DbSet<Register> Register { get; set; }
+        public DbSet<Login> Login { get; set; }
 
         public DbSet<CompanyMaster> Companies { get; set; }
         public DbSet<VendorMaster> Vendors { get; set; }
