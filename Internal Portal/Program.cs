@@ -41,6 +41,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // Register connection factory and repository
 builder.Services.AddScoped<ISqlConnectionFactory, SqlConnectionFactory>();
+builder.Services.AddScoped<ILogin, LoginRepository>();
 builder.Services.AddScoped<IRegister, RegisterRepository>();
 builder.Services.AddScoped<ICompany, CompanyRepository>();
 builder.Services.AddScoped<ICustomer, CustomerRepository>();

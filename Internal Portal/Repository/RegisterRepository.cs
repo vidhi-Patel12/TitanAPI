@@ -56,7 +56,7 @@ namespace Internal_Portal.Repository
             cmd.Parameters.Add(new SqlParameter("@LastName", SqlDbType.VarChar, 100) { Value = (object?)m.LastName ?? DBNull.Value });
             cmd.Parameters.Add(new SqlParameter("@Email", SqlDbType.VarChar, 150) { Value = (object?)m.Email ?? DBNull.Value });
             cmd.Parameters.Add(new SqlParameter("@Password", SqlDbType.VarChar, 255) { Value = (object?)m.Password ?? DBNull.Value });
-            cmd.Parameters.Add(new SqlParameter("@ContactNumber", SqlDbType.VarChar, 20) { Value = (object?)m.ContactNumber ?? DBNull.Value });
+            cmd.Parameters.Add(new SqlParameter("@ContactNumber", SqlDbType.VarChar, 20) { Value = (object?)m.contact_number ?? DBNull.Value });
             cmd.Parameters.Add(new SqlParameter("@UserRoleId", SqlDbType.Int) { Value = m.UserRoleId });
 
             var result = await cmd.ExecuteScalarAsync();
@@ -76,7 +76,7 @@ namespace Internal_Portal.Repository
             cmd.Parameters.Add(new SqlParameter("@LastName", SqlDbType.VarChar, 100) { Value = (object?)m.LastName ?? DBNull.Value });
             cmd.Parameters.Add(new SqlParameter("@Email", SqlDbType.VarChar, 150) { Value = (object?)m.Email ?? DBNull.Value });
             cmd.Parameters.Add(new SqlParameter("@Password", SqlDbType.VarChar, 255) { Value = (object?)m.Password ?? DBNull.Value });
-            cmd.Parameters.Add(new SqlParameter("@ContactNumber", SqlDbType.VarChar, 20) { Value = (object?)m.ContactNumber ?? DBNull.Value });
+            cmd.Parameters.Add(new SqlParameter("@ContactNumber", SqlDbType.VarChar, 20) { Value = (object?)m.contact_number ?? DBNull.Value });
             cmd.Parameters.Add(new SqlParameter("@UserRoleId", SqlDbType.Int) { Value = m.UserRoleId });
 
             var result = await cmd.ExecuteScalarAsync();
@@ -105,7 +105,7 @@ namespace Internal_Portal.Repository
                 LastName = reader["last_name"] as string,
                 Email = reader["email"] as string,
                 Password = reader["password"] as string,
-                ContactNumber = reader["contact_number"] as string,
+                contact_number = reader["contact_number"] as string,
                 UserRoleId = Convert.ToInt32(reader["user_role_id"]),
                 UserRole = new UserRoleMaster
                 {
