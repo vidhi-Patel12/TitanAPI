@@ -1,5 +1,6 @@
 using Internal_Portal.Data;
 using Internal_Portal.Interface;
+using Internal_Portal.Models;
 using Internal_Portal.Repository;
 using Internal_Portal.Swagger;
 using Microsoft.EntityFrameworkCore;
@@ -51,6 +52,12 @@ builder.Services.AddScoped<IProjectEmployee, ProjectEmployeeRepository>();
 builder.Services.AddScoped<IProjectMaster, ProjectMasterRepository>();
 builder.Services.AddScoped<ITimesheet, TimesheetRepository>();
 builder.Services.AddScoped<ITimesheetEntry, TimesheetEntryRepository>();
+builder.Services.AddScoped<IDropdownMaster, DropdownMasterRepository>();
+builder.Services.AddScoped<IService, ServiceRepository>();
+builder.Services.AddScoped<ISolution, SolutionRepository>();
+builder.Services.AddScoped<ICareer, CareerRepository>();
+
+builder.Services.AddScoped<ISubService, SubServiceRepository>();
 
 
 builder.Services.AddCors(options =>
