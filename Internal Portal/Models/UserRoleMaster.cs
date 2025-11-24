@@ -20,6 +20,11 @@ namespace Internal_Portal.Models
         [JsonIgnore]
         public virtual ICollection<Register>? Registers { get; set; }
 
+        [JsonIgnore]
+        public ICollection<RolePermissionMaster>? RolePermissions { get; set; } = new List<RolePermissionMaster>();
+
+        [JsonIgnore]
+        public ICollection<PermissionMaster>? Permissions { get; set; } = new List<PermissionMaster>();
 
     }
 }

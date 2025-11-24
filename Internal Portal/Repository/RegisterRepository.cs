@@ -48,20 +48,31 @@ namespace Internal_Portal.Repository
             if (m is null) throw new ArgumentNullException(nameof(m));
 
             await using var conn = _factory.CreateConnection();
+
             await using var cmd = conn.CreateCommand();
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.CommandText = "dbo.Register_Insert";
 
-            cmd.Parameters.Add(new SqlParameter("@FirstName", SqlDbType.VarChar, 100) { Value = (object?)m.FirstName ?? DBNull.Value });
-            cmd.Parameters.Add(new SqlParameter("@LastName", SqlDbType.VarChar, 100) { Value = (object?)m.LastName ?? DBNull.Value });
-            cmd.Parameters.Add(new SqlParameter("@Email", SqlDbType.VarChar, 150) { Value = (object?)m.Email ?? DBNull.Value });
-            cmd.Parameters.Add(new SqlParameter("@Password", SqlDbType.VarChar, 255) { Value = (object?)m.Password ?? DBNull.Value });
-            cmd.Parameters.Add(new SqlParameter("@ContactNumber", SqlDbType.VarChar, 20) { Value = (object?)m.contact_number ?? DBNull.Value });
-            cmd.Parameters.Add(new SqlParameter("@UserRoleId", SqlDbType.Int) { Value = m.UserRoleId });
+            try
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.CommandText = "dbo.Register_Insert";
 
-            var result = await cmd.ExecuteScalarAsync();
-            return Convert.ToInt32(result);
+                cmd.Parameters.Add(new SqlParameter("@FirstName", SqlDbType.VarChar, 100) { Value = (object?)m.FirstName ?? DBNull.Value });
+                cmd.Parameters.Add(new SqlParameter("@LastName", SqlDbType.VarChar, 100) { Value = (object?)m.LastName ?? DBNull.Value });
+                cmd.Parameters.Add(new SqlParameter("@Email", SqlDbType.VarChar, 150) { Value = (object?)m.Email ?? DBNull.Value });
+                cmd.Parameters.Add(new SqlParameter("@Password", SqlDbType.VarChar, 255) { Value = (object?)m.Password ?? DBNull.Value });
+                cmd.Parameters.Add(new SqlParameter("@ContactNumber", SqlDbType.VarChar, 20) { Value = (object?)m.contact_number ?? DBNull.Value });
+                cmd.Parameters.Add(new SqlParameter("@UserRoleId", SqlDbType.Int) { Value = m.UserRoleId });
+
+                var result = await cmd.ExecuteScalarAsync();
+                return Convert.ToInt32(result);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("SQL ERROR in InsertAsync: " + ex.Message);
+                throw;
+            }
         }
+
         public async Task<bool> UpdateAsync(Register m)
         {
             if (m is null) throw new ArgumentNullException(nameof(m));

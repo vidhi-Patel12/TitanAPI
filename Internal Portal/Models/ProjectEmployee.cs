@@ -21,7 +21,10 @@ namespace Internal_Portal.Models
         public string CommissionType { get; set; }
         public decimal? ConsultantRate { get; set; }
         public string RateUnit { get; set; }
-        public string TimesheetType { get; set; }
+        public List<string> TimesheetTypes { get; set; } = new List<string>();
+
+        public string? TimesheetType { get; set; }
+
         public string SapModule { get; set; }
         public DateTime? EmployeeStartDate { get; set; }
         public DateTime? EmployeeEndDate { get; set; }

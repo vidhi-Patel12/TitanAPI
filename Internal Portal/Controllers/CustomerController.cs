@@ -2,6 +2,7 @@
 using Internal_Portal.Models;
 using Internal_Portal.Repository;
 using Internal_Portal.Utilities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -32,6 +33,8 @@ namespace Internal_Portal.Controllers
 
         // GET: api/Customer
         [HttpGet]
+        [Authorize(Policy = "Customer.View")]
+
         public async Task<IActionResult> GetAll()
         {
             var list = await _repo.GetAllAsync();
@@ -40,6 +43,7 @@ namespace Internal_Portal.Controllers
 
         // GET: api/Customer/{id}
         [HttpGet("{id:int}")]
+        [Authorize(Policy = "Customer.ViewById")]
         public async Task<IActionResult> GetById(int id)
         {
             var item = await _repo.GetByIdAsync(id);
@@ -48,6 +52,7 @@ namespace Internal_Portal.Controllers
 
         // POST: api/Customer (Insert/Update)
         [HttpPost]
+        [Authorize(Policy = "Customer.InsertUpdate")]
         [RequestSizeLimit(100_000_000)] // overall request size limit (adjust)
         [Consumes("multipart/form-data")] // Tells Swagger it's file upload
         [SwaggerOperation(
@@ -159,6 +164,7 @@ namespace Internal_Portal.Controllers
 
         // DELETE: api/Customer/{id}
         [HttpDelete("{id:int}")]
+        [Authorize(Policy = "Customer.Delete")]
         public async Task<IActionResult> Delete(int id)
         {
             // get existing to delete files after DB deletion

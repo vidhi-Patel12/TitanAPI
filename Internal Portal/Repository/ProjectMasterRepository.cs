@@ -50,6 +50,7 @@ namespace Internal_Portal.Repository
             cmd.CommandText = "dbo.ProjectMaster_InsertUpdate";
 
             cmd.Parameters.Add(new SqlParameter("@ProjectCode", SqlDbType.VarChar, 20) { Value = (object?)project.ProjectCode ?? DBNull.Value });
+            cmd.Parameters.Add(new SqlParameter("@ProjectName", SqlDbType.NVarChar, -1) { Value = (object?)project.ProjectName ?? DBNull.Value });
             cmd.Parameters.Add(new SqlParameter("@Description", SqlDbType.NVarChar, -1) { Value = (object?)project.Description ?? DBNull.Value });
             cmd.Parameters.Add(new SqlParameter("@StartDate", SqlDbType.Date) { Value = (object?)project.StartDate ?? DBNull.Value });
             cmd.Parameters.Add(new SqlParameter("@EndDate", SqlDbType.Date) { Value = (object?)project.EndDate ?? DBNull.Value });
@@ -86,6 +87,7 @@ namespace Internal_Portal.Repository
             return new ProjectMaster
             {
                 ProjectCode = reader["project_code"] as string,
+                ProjectName = reader["project_name"] as string,
                 Description = reader["description"] as string,
                 StartDate = reader["start_date"] as DateTime?,
                 EndDate = reader["end_date"] as DateTime?,

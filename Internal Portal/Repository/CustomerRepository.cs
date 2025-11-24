@@ -1,6 +1,8 @@
 ﻿using Internal_Portal.Data;
 using Internal_Portal.Interface;
 using Internal_Portal.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System.Data;
 
@@ -11,6 +13,8 @@ namespace Internal_Portal.Repository
         private readonly ISqlConnectionFactory _factory;
         public CustomerRepository(ISqlConnectionFactory factory) => _factory = factory;
 
+        [HttpGet]
+        [Authorize(Policy = "Customer.View")]
         public async Task<IEnumerable<CustomerMaster>> GetAllAsync()
         {
             var list = new List<CustomerMaster>();
@@ -29,6 +33,8 @@ namespace Internal_Portal.Repository
             return list;
         }
 
+        [HttpGet("{id}")]
+        [Authorize(Policy = "Customer.ViewById")]
         public async Task<CustomerMaster?> GetByIdAsync(int customerId)
         {
             await using var conn = _factory.CreateConnection();
@@ -42,6 +48,8 @@ namespace Internal_Portal.Repository
             return null;
         }
 
+        [HttpGet]
+        [Authorize(Policy = "Customer.AddUpdate")]
         public async Task<CustomerMaster> InsertUpdateAsync(CustomerMaster m)
         {
             if (m is null) throw new ArgumentNullException(nameof(m));
@@ -75,6 +83,8 @@ namespace Internal_Portal.Repository
             throw new InvalidOperationException("CustomerMaster_InsertUpdate did not return the saved row.");
         }
 
+        [HttpGet]
+        [Authorize(Policy = "Customer.Delete")]
         public async Task<bool> DeleteAsync(int customerId)
         {
             await using var conn = _factory.CreateConnection();

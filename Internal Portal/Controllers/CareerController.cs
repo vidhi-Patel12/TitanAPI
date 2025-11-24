@@ -29,8 +29,18 @@ namespace Internal_Portal.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await _careerRepo.GetAllCareers());
+            try
+            {
+                var careers = await _careerRepo.GetAllCareers();
+                return Ok(careers);
+            }
+            catch (Exception ex)
+            {
+                // TEMP: return the exception message + stacktrace so you can see what's failing on Plesk
+                return StatusCode(500, new { message = ex.Message, stack = ex.StackTrace });
+            }
         }
+
 
         [HttpGet("ByName/{jobTitle}")]
         public async Task<IActionResult> GetByName(string jobTitle)

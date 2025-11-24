@@ -1,5 +1,6 @@
 ﻿using Internal_Portal.Interface;
 using Internal_Portal.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Internal_Portal.Controllers
@@ -12,7 +13,9 @@ namespace Internal_Portal.Controllers
         public DropdownMasterController(IDropdownMaster repo) => _repo = repo;
 
         // GET: api/DropdownMaster
+        [AllowAnonymous]
         [HttpGet]
+        [Authorize(Policy = "AdminDropdown.View")]
         public async Task<IActionResult> GetAll()
         {
             var list = await _repo.GetAllAsync();
@@ -21,6 +24,7 @@ namespace Internal_Portal.Controllers
 
         // GET: api/DropdownMaster/{id}
         [HttpGet("{id:int}")]
+        [Authorize(Policy = "AdminDropdown.ViewById")]
         public async Task<IActionResult> GetById(int id)
         {
             var item = await _repo.GetByIdAsync(id);
@@ -29,6 +33,7 @@ namespace Internal_Portal.Controllers
 
         // GET: api/DropdownMaster/{name}
         [HttpGet("by-name/{name}")]
+        [Authorize(Policy = "AdminDropdown.ViewByName")]
         public async Task<IActionResult> GetByName(string name)
         {
             var items = await _repo.GetByNameAsync(name);
@@ -43,6 +48,7 @@ namespace Internal_Portal.Controllers
         // POST: api/DropdownMaster?userId=1
         // Insert/Update handled by the same SP
         [HttpPost]
+        [Authorize(Policy = "AdminDropdown.InsertUpdate")]
         public async Task<IActionResult> InsertUpdate([FromBody] DropdownMaster model)
         {
 
@@ -54,6 +60,7 @@ namespace Internal_Portal.Controllers
 
         // DELETE: api/DropdownMaster/{id}?updatedBy=1
         [HttpDelete("{id:int}")]
+        [Authorize(Policy = "AdminDropdown.Delete")]
         public async Task<IActionResult> Delete(int id, [FromQuery] int updatedBy)
         {
             if (updatedBy <= 0) return BadRequest(new { message = "updatedBy query parameter is required." });

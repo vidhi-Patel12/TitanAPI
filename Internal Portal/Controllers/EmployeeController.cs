@@ -2,6 +2,7 @@
 using Internal_Portal.Models;
 using Internal_Portal.Repository;
 using Internal_Portal.Utilities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,6 +23,7 @@ namespace Internal_Portal.Controllers
 
         // GET: api/Employee
         [HttpGet]
+        [Authorize(Policy = "Employee.View")]
         public async Task<IActionResult> GetAll()
         {
             var list = await _repo.GetAllAsync();
@@ -30,6 +32,7 @@ namespace Internal_Portal.Controllers
 
         // GET: api/Employee/{id}
         [HttpGet("{id:int}")]
+        [Authorize(Policy = "Employee.ViewById")]
         public async Task<IActionResult> GetById(int id)
         {
             var item = await _repo.GetByIdAsync(id);
@@ -37,6 +40,7 @@ namespace Internal_Portal.Controllers
         }
 
         [HttpPost("InsertUpdate")]
+        [Authorize(Policy = "Employee.InsertUpdate")]
         public async Task<IActionResult> InsertUpdate([FromForm] EmployeeFormDto dto)
         {
             var employee = new EmployeeMaster
@@ -88,6 +92,7 @@ namespace Internal_Portal.Controllers
 
         // DELETE: api/Employee/{id}
         [HttpDelete("{id:int}")]
+        [Authorize(Policy = "Employee.Delete")]
         public async Task<IActionResult> Delete(int id)
         {
             var deleted = await _repo.DeleteAsync(id);

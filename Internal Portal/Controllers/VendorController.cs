@@ -1,6 +1,7 @@
 ﻿using Internal_Portal.Interface;
 using Internal_Portal.Models;
 using Internal_Portal.Utilities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,6 +21,7 @@ namespace Internal_Portal.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "Vendor.View")]
         public async Task<IActionResult> GetAll()
         {
             var result = await _vendorRepo.GetAllAsync();
@@ -27,6 +29,7 @@ namespace Internal_Portal.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Policy = "Vendor.ViewById")]
         public async Task<IActionResult> GetById(int id)
         {
             var vendor = await _vendorRepo.GetByIdAsync(id);
@@ -35,6 +38,7 @@ namespace Internal_Portal.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "Vendor.AddUpdate")]
         public async Task<IActionResult> InsertUpdate([FromForm] VendorDto dto)
         {
             var vendor = new VendorMaster
@@ -68,6 +72,7 @@ namespace Internal_Portal.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = "Vendor.Delete")]
         public async Task<IActionResult> Delete(int id)
         {
             var success = await _vendorRepo.DeleteAsync(id);

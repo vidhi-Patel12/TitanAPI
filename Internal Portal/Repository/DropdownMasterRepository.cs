@@ -66,25 +66,35 @@ namespace Internal_Portal.Repository
         {
             if (model is null) throw new ArgumentNullException(nameof(model));
 
-            await using var conn = _factory.CreateConnection();
-            await using var cmd = conn.CreateCommand();
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.CommandText = "dbo.DropdownMaster_InsertUpdate";
-
-            cmd.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int) { Value = model.Id });
-            cmd.Parameters.Add(new SqlParameter("@Name", SqlDbType.VarChar, 100) { Value = (object?)model.Name ?? DBNull.Value });
-            cmd.Parameters.Add(new SqlParameter("@Value", SqlDbType.VarChar, -1) { Value = (object?)model.Value ?? DBNull.Value });
-            cmd.Parameters.Add(new SqlParameter("@IsActive", SqlDbType.Bit) { Value = model.IsActive });
-            cmd.Parameters.Add(new SqlParameter("@CreatedBy", SqlDbType.Int) { Value = model.CreatedBy });
-            cmd.Parameters.AddWithValue("@UpdatedBy", model.UpdatedBy ?? (object)DBNull.Value);
-
-            await using var reader = await cmd.ExecuteReaderAsync();
-            if (await reader.ReadAsync())
+            try
             {
-                return MapDropdown(reader);
-            }
+                await using var conn = _factory.CreateConnection();
+                await using var cmd = conn.CreateCommand();
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.CommandText = "dbo.DropdownMaster_InsertUpdate";
 
-            throw new InvalidOperationException("Insert/Update failed, no data returned.");
+                cmd.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int) { Value = model.Id });
+                cmd.Parameters.Add(new SqlParameter("@Name", SqlDbType.VarChar, 100) { Value = (object?)model.Name ?? DBNull.Value });
+                cmd.Parameters.Add(new SqlParameter("@Value", SqlDbType.NVarChar, -1) { Value = (object?)model.Value ?? DBNull.Value });
+                cmd.Parameters.Add(new SqlParameter("@IsActive", SqlDbType.Bit) { Value = model.IsActive });
+                cmd.Parameters.Add(new SqlParameter("@CreatedBy", SqlDbType.Int) { Value = model.CreatedBy });
+                cmd.Parameters.AddWithValue("@UpdatedBy", model.UpdatedBy ?? (object)DBNull.Value);
+
+                await using var reader = await cmd.ExecuteReaderAsync();
+                if (await reader.ReadAsync())
+                {
+                    return MapDropdown(reader);
+                }
+
+                throw new InvalidOperationException("Insert/Update failed, no data returned.");
+
+            }
+            catch (Exception ex)
+            {
+                // TEMP: log full details — later replace with proper logger
+                Console.WriteLine($"❌ DB ERROR: {ex.Message}");
+                throw; // rethrow to bubble to middleware
+            }
         }
 
         //public async Task<DropdownMaster> InsertUpdateAsync(DropdownMaster model)

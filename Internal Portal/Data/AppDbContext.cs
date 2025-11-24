@@ -21,6 +21,10 @@ namespace Internal_Portal.Data
         public DbSet<Timesheet> Timesheets { get; set; }
         public DbSet<TimesheetEntry> TimesheetEntries { get; set; }
 
+        public DbSet<PermissionMaster> PermissionMaster { get; set; }
+        public DbSet<RolePermissionMaster> RolePermissionMaster { get; set; }
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -35,6 +39,22 @@ namespace Internal_Portal.Data
                         .HasOne(v => v.CompanyMaster)
                         .WithMany(c => c.Vendors)
                         .HasForeignKey(v => v.CompanyCode);
+
+            modelBuilder.Entity<RolePermissionMaster>()
+           .HasKey(rp => new { rp.RoleId, rp.PermissionId });
+
+            modelBuilder.Entity<RolePermissionMaster>()
+                .HasOne(rp => rp.Role)
+                .WithMany(r => r.RolePermissions)
+                .HasForeignKey(rp => rp.RoleId);
+
+            modelBuilder.Entity<RolePermissionMaster>()
+                .HasOne(rp => rp.Permission)
+                .WithMany(p => p.RolePermissions)
+                .HasForeignKey(rp => rp.PermissionId);
+
+            modelBuilder.Entity<RolePermissionMaster>()
+            .Ignore(r => r.ModuleId);
         }
     }
 

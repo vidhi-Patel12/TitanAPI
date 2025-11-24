@@ -1,5 +1,6 @@
 ﻿using Internal_Portal.Interface;
 using Internal_Portal.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,9 +14,11 @@ namespace Internal_Portal.Controllers
         public ProjectMasterController(IProjectMaster repo) => _repo = repo;
 
         [HttpGet]
+        [Authorize(Policy = "ProjectMaster.View")]
         public async Task<IActionResult> GetAll() => Ok(await _repo.GetAllAsync());
 
         [HttpGet("{projectCode}")]
+        [Authorize(Policy = "ProjectMaster.ViewByCode")]
         public async Task<IActionResult> GetByCode(string projectCode)
         {
             var project = await _repo.GetByCodeAsync(projectCode);
@@ -23,6 +26,7 @@ namespace Internal_Portal.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "ProjectMaster.InsertUpdate")]
         public async Task<IActionResult> InsertUpdate(ProjectMaster project)
         {
             if (project is null) return BadRequest();
@@ -31,6 +35,7 @@ namespace Internal_Portal.Controllers
         }
 
         [HttpDelete("{projectCode}")]
+        [Authorize(Policy = "ProjectMaster.Delete")]
         public async Task<IActionResult> Delete(string projectCode)
         {
             var success = await _repo.DeleteAsync(projectCode);

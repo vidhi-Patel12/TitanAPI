@@ -35,7 +35,12 @@ namespace Internal_Portal.Controllers
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var id = await _repo.InsertAsync(model);
-            return CreatedAtAction(nameof(GetById), new { id }, model);
+            return Ok(new
+            {
+                success = true,
+                message = "Registration successful!",
+                data = model
+            });
         }
 
         // PUT: api/Register/{id}

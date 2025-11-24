@@ -55,6 +55,14 @@ namespace Internal_Portal.Repository
                 .FirstOrDefaultAsync();
         }
 
+        public async Task<Register?> GetUserByOTPContactAsync(string contact)
+        {
+            return await _context.Register
+                .Include(r => r.UserRole)      // <-- LOAD ROLE
+                .FirstOrDefaultAsync(r => r.contact_number == contact);
+        }
+
+
         public async Task InvalidateOtpAsync(Login otpEntry)
         {
             otpEntry.IsValid = false;

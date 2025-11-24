@@ -1,6 +1,7 @@
 ﻿using Internal_Portal.Interface;
 using Internal_Portal.Models;
 using Internal_Portal.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,6 +16,7 @@ namespace Internal_Portal.Controllers
 
         // GET: api/Company
         [HttpGet]
+        [Authorize(Policy = "Company.View")]
         public async Task<IActionResult> GetAll()
         {
             var list = await _repo.GetAllAsync();
@@ -23,6 +25,7 @@ namespace Internal_Portal.Controllers
 
         // GET: api/Company/{code}
         [HttpGet("{code}")]
+        [Authorize(Policy = "Company.GetByCode")]
         public async Task<IActionResult> GetByCode(string code)
         {
             var item = await _repo.GetByCodeAsync(code);
@@ -31,6 +34,8 @@ namespace Internal_Portal.Controllers
 
         // POST: api/Company  (Merge insert/update)
         [HttpPost]
+        [Authorize(Policy = "Company.AddUpdate")]
+
         public async Task<IActionResult> InsertUpdate([FromBody] CompanyMaster model)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -44,6 +49,8 @@ namespace Internal_Portal.Controllers
 
         // DELETE: api/Company/{code}
         [HttpDelete("{code}")]
+        [Authorize(Policy = "Company.Delete")]
+
         public async Task<IActionResult> Delete(string code)
         {
             var deleted = await _repo.DeleteAsync(code);

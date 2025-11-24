@@ -11,15 +11,36 @@ namespace Internal_Portal.Models
         [ForeignKey("ProjectMaster")]
         public string ProjectCode { get; set; }
 
+        public string ProjectName { get; set; }
+
         [ForeignKey("EmployeeMaster")]
         public int EmployeeId { get; set; }
+        public string? EmployeeName { get; set; }
+        public string? EmployeeEmail { get; set; }
+        public DateOnly? WorkMonth { get; set; } // or DateTime? if you prefer
 
         public string TimesheetType { get; set; }
-        public string MonthYear { get; set; }
-        public DateTime? StartDate { get; set; }
-        public DateTime? EndDate { get; set; }
-        public string Status { get; set; }
-
+        public int? rate { get; set; }
+        public string unit { get; set; }
+        public int? monthlyworkunit { get; set; }
+        public int? holiday { get; set; }
+        public int? leave { get; set; }
+        public int? extradays { get; set; }
+        public int? actualworkdayshours { get; set; }
+        public string? uploadtimesheet { get; set; }
+        public string? status { get; set; }
+        public int? approvedworkingunit { get; set; }
+        public double? netrate { get; set; }
+        public int? tdsapplicable { get; set; }
+        public double? netpayble { get; set; }
+        public double? netpaybleaftertds { get; set; }
+        public string? salarypaid { get;set; }
+        public DateOnly? salarydate { get; set; }
+        public double? tdavalue { get; set; }
+        public string? tdspaid { get; set; }
+        public DateOnly? tdsdate { get; set; }
+        public DateTime? FilterMonthStart { get; set; }
+        public DateTime? FilterMonthEnd { get; set; }
         public ProjectMaster? ProjectMaster { get; set; }
         public EmployeeMaster? EmployeeMaster { get; set; }
         public ICollection<TimesheetEntry>? Entries { get; set; }

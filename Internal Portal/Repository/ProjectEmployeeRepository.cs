@@ -42,6 +42,29 @@ namespace Internal_Portal.Repository
             return null;
         }
 
+        public async Task<IEnumerable<ProjectEmployee>> GetByProjectCodeAsync(string projectCode)
+        {
+            var results = new List<ProjectEmployee>();
+
+            await using var conn = _factory.CreateConnection();
+            //await conn.OpenAsync();
+
+            await using var cmd = conn.CreateCommand();
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandText = "dbo.ProjectEmployee_GetByProjectCode";
+            cmd.Parameters.Add(new SqlParameter("@Project_Code", SqlDbType.VarChar) { Value = projectCode });
+
+            await using var reader = await cmd.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                results.Add(MapGetProjectEmployee(reader));
+            }
+
+            return results;
+        }
+
+
+
         public async Task<ProjectEmployee> InsertUpdateAsync(ProjectEmployee m)
         {
             if (m is null) throw new ArgumentNullException(nameof(m));
@@ -59,7 +82,7 @@ namespace Internal_Portal.Repository
             cmd.Parameters.Add(new SqlParameter("@AllocationType", SqlDbType.VarChar, 20) { Value = (object?)m.AllocationType ?? DBNull.Value });
             cmd.Parameters.Add(new SqlParameter("@CommissionType", SqlDbType.NVarChar, 20) { Value = (object?)m.CommissionType ?? DBNull.Value }); cmd.Parameters.Add(new SqlParameter("@ConsultantRate", SqlDbType.Decimal) { Value = (object?)m.ConsultantRate ?? DBNull.Value });
             cmd.Parameters.Add(new SqlParameter("@RateUnit", SqlDbType.VarChar, 50) { Value = (object?)m.RateUnit ?? DBNull.Value });
-            cmd.Parameters.Add(new SqlParameter("@TimesheetType", SqlDbType.VarChar, 20) { Value = (object?)m.TimesheetType ?? DBNull.Value });
+            cmd.Parameters.Add(new SqlParameter("@TimesheetType", SqlDbType.VarChar, 200) { Value = (object?)m.TimesheetType ?? DBNull.Value });
             cmd.Parameters.Add(new SqlParameter("@SapModule", SqlDbType.VarChar, 100) { Value = (object?)m.SapModule ?? DBNull.Value });
             cmd.Parameters.Add(new SqlParameter("@EmployeeStartDate", SqlDbType.Date) { Value = (object?)m.EmployeeStartDate ?? DBNull.Value });
             cmd.Parameters.Add(new SqlParameter("@EmployeeEndDate", SqlDbType.Date) { Value = (object?)m.EmployeeEndDate ?? DBNull.Value });
@@ -106,6 +129,9 @@ namespace Internal_Portal.Repository
                 ConsultantRate = reader["consultant_rate"] as decimal?,
                 RateUnit = reader["rate_unit"] as string,
                 TimesheetType = reader["timesheet_type"] as string,
+                TimesheetTypes = reader["timesheet_type"] != DBNull.Value
+                ? reader["timesheet_type"].ToString().Split(',', StringSplitOptions.RemoveEmptyEntries).ToList()
+                : new List<string>(),
                 SapModule = reader["sap_module"] as string,
                 EmployeeStartDate = reader["employee_start_date"] as DateTime?,
                 EmployeeEndDate = reader["employee_end_date"] as DateTime?,
@@ -118,8 +144,51 @@ namespace Internal_Portal.Repository
                 SalaryPaymentDays = reader["salary_payment_days"] as int?,
                 TdsPercent = reader["tds_percent"] as decimal?,
                 AccountPreference = reader["account_preference"] as string,
-                TextFields = reader["text_fields"] as string
+                TextFields = reader["text_fields"] as string,
+
+                //EmployeeMaster = new EmployeeMaster
+                //{
+                //    EmployeeId = Convert.ToInt32(reader["employee_id"]),
+                //    Name = reader["name"] as string
+                //}
             };
         }
+
+        private static ProjectEmployee MapGetProjectEmployee(SqlDataReader reader)
+        {
+            return new ProjectEmployee
+            {
+                Id = (int)reader["id"],
+                ProjectCode = reader["project_code"] as string,
+                EmployeeId = (int)reader["employee_id"],
+                EmployeeType = reader["employee_type"] as string,
+                Technology = reader["technology"] as string,
+                AllocationType = reader["allocation_type"] as string,
+                CommissionType = reader["commission_type"] as string,
+                ConsultantRate = reader["consultant_rate"] as decimal?,
+                RateUnit = reader["rate_unit"] as string,
+                TimesheetType = reader["timesheet_type"] as string,
+                SapModule = reader["sap_module"] as string,
+                EmployeeStartDate = reader["employee_start_date"] as DateTime?,
+                EmployeeEndDate = reader["employee_end_date"] as DateTime?,
+                CycleStartDay = reader["cycle_start_day"] as int?,
+                CycleEndDay = reader["cycle_end_day"] as int?,
+                PaymentMode = reader["payment_mode"] as string,
+                TimesheetRequired = reader["timesheet_required"] as bool?,
+                CustomerRate = reader["customer_rate"] as decimal?,
+                Inactive = reader["inactive"] as bool?,
+                SalaryPaymentDays = reader["salary_payment_days"] as int?,
+                TdsPercent = reader["tds_percent"] as decimal?,
+                AccountPreference = reader["account_preference"] as string,
+                TextFields = reader["text_fields"] as string,
+
+                EmployeeMaster = new EmployeeMaster
+                {
+                    EmployeeId = Convert.ToInt32(reader["employee_id"]),
+                    Name = reader["name"] as string
+                }
+            };
+        }
+
     }
 }

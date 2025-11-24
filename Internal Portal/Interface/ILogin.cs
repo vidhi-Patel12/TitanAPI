@@ -10,6 +10,7 @@ namespace Internal_Portal.Interface
         Task<Login> GenerateOtpAsync(Register user);
         Task<Login?> GetLatestValidOtpAsync(int registerId);
         Task InvalidateOtpAsync(Login otpEntry);
+        Task<Register?> GetUserByOTPContactAsync(string contact);
         Task ExpireOtpsAsync();
 
         Task SaveChangesAsync();
